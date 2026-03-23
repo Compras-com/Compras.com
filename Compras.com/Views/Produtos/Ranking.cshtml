@@ -1,0 +1,20 @@
+@model dynamic
+
+<h2>Ranking de Fornecedores</h2>
+
+<table border="1">
+
+<tr>
+<th>Fornecedor</th>
+<th>Média de Preço</th>
+</tr>
+
+@foreach (var r in Model)
+{
+<tr>
+<td>@r.Fornecedor</td>
+<td>@r.MediaPreco</td>
+</tr>
+}
+
+</table>

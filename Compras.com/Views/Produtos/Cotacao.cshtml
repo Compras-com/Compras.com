@@ -1,0 +1,38 @@
+@model List<Compras.com.Models.Produto>
+
+<h2>Buscar Produtos</h2>
+
+<form method="get">
+<input type="text" name="nome" placeholder="Produto" />
+<button type="submit">Buscar</button>
+</form>
+
+<br>
+
+@if(Model != null && Model.Count > 0)
+{
+<table border="1">
+
+<tr>
+<th>Fornecedor</th>
+<th>Produto</th>
+<th>Preço</th>
+<th>Ação</th>
+</tr>
+
+@foreach (var p in Model)
+{
+<tr>
+<td>@p.EmailFornecedor</td>
+<td>@p.Nome</td>
+<td>@p.PrecoUnitario</td>
+
+<td>
+<a href="/Produtos/Adicionar?nome=@p.Nome">Adicionar</a>
+</td>
+
+</tr>
+}
+
+</table>
+}

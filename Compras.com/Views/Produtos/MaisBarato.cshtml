@@ -1,0 +1,21 @@
+@model Compras.com.Models.Produto
+
+<h2>Produto Mais Barato</h2>
+
+<table border="1">
+
+<tr>
+    <th>Nome</th>
+    <th>Preço</th>
+    <th>Imposto</th>
+    <th>Fornecedor</th>
+</tr>
+
+<tr>
+    <td>@Model.Nome</td>
+    <td>@Model.PrecoUnitario</td>
+    <td>@(Model.ComImposto ? "Com imposto" : "Sem imposto")</td>
+    <td>@Model.EmailFornecedor</td>
+</tr>
+
+</table>

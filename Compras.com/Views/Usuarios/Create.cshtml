@@ -1,0 +1,49 @@
+@model Compras.com.Models.Usuario
+
+<h2>Novo Cadastro</h2>
+
+<form method="post">
+
+<div>
+<label>Nome</label>
+<input asp-for="Nome" />
+</div>
+
+<br>
+
+<div>
+<label>Email</label>
+<input asp-for="Email" />
+</div>
+
+<br>
+
+<div>
+<label>Senha</label>
+<input asp-for="Senha" type="password"/>
+</div>
+
+<br>
+
+<div>
+<label>Tipo de Usuário</label>
+
+<select asp-for="Tipo">
+
+<option value="Fornecedor">Fornecedor</option>
+
+<option value="Comprador">Comprador</option>
+
+</select>
+
+</div>
+
+<br>
+
+<button type="submit">Salvar</button>
+
+</form>
+
+<br>
+
+<a href="/Usuarios">Voltar</a>

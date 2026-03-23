@@ -1,0 +1,37 @@
+@model Compras.com.Models.Produto
+
+<h2>Cadastrar Produto</h2>
+
+<form method="post">
+
+<div>
+<label>Nome</label>
+<input asp-for="Nome" />
+</div>
+
+<br>
+
+<div>
+<label>Preço</label>
+<input asp-for="PrecoUnitario" />
+</div>
+
+<br>
+
+<div>
+<label>Imposto</label>
+<select asp-for="ComImposto">
+<option value="true">Com imposto</option>
+<option value="false">Sem imposto</option>
+</select>
+</div>
+
+<br>
+
+<button type="submit">Salvar</button>
+
+</form>
+
+<br>
+
+<a href="/Produtos">Voltar</a>

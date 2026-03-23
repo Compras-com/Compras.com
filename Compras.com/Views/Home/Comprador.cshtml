@@ -1,0 +1,99 @@
+<h2>🛒 Área do Comprador</h2>
+
+<!-- 🔙 VOLTAR | 🔒 ALTERAR SENHA | ❌ FECHAR -->
+<a href="/Login/Logout">Voltar</a> |
+<a href="/Conta/AlterarSenha">Alterar Senha</a>
+<a href="/Login/Logout" style="float:right;">❌</a>
+
+<hr />
+
+<h3>🔍 Buscar Produto</h3>
+
+<input type="text" id="produtoBusca" placeholder="Digite o produto" />
+<button onclick="buscarProduto()">Buscar</button>
+
+<hr />
+
+<button onclick="adicionarFornecedor()">➕ Adicionar Fornecedor</button>
+
+<br /><br />
+
+<table border="1" width="100%" id="tabelaCotacao" style="display:none;">
+    <thead>
+        <tr id="cabecalho">
+            <th>Produto</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr id="linhaDados">
+            <td id="nomeProduto"></td>
+        </tr>
+    </tbody>
+</table>
+
+<br />
+
+<button onclick="novaCotacao()">Nova Cotação</button>
+<button onclick="enviarEmail()">Enviar para Email</button>
+
+<script>
+let fornecedores = [];
+let produtoAtual = "";
+
+const dados = [
+    { fornecedor: "Fornecedor A", produto: "cimento", preco: 110 },
+    { fornecedor: "Fornecedor B", produto: "cimento", preco: 105 },
+    { fornecedor: "Fornecedor C", produto: "cimento", preco: 115 }
+];
+
+function buscarProduto() {
+    produtoAtual = document.getElementById("produtoBusca").value.toLowerCase();
+
+    let filtrados = dados.filter(d => d.produto === produtoAtual);
+
+    if (filtrados.length === 0) {
+        alert("Produto não encontrado");
+        return;
+    }
+
+    fornecedores = filtrados;
+
+    document.getElementById("nomeProduto").innerText = produtoAtual;
+
+    document.getElementById("tabelaCotacao").style.display = "table";
+}
+
+function adicionarFornecedor() {
+    if (fornecedores.length === 0) {
+        alert("Busque um produto primeiro");
+        return;
+    }
+
+    let fornecedor = fornecedores.shift();
+
+    if (!fornecedor) {
+        alert("Não há mais fornecedores");
+        return;
+    }
+
+    let cabecalho = document.getElementById("cabecalho");
+    let linha = document.getElementById("linhaDados");
+
+    let th = document.createElement("th");
+    th.innerText = fornecedor.fornecedor;
+
+    let td = document.createElement("td");
+    td.innerText = fornecedor.preco;
+
+    cabecalho.appendChild(th);
+    linha.appendChild(td);
+}
+
+function novaCotacao() {
+    location.reload();
+}
+
+function enviarEmail() {
+    alert("Cotação enviada para seu email");
+}
+</script>

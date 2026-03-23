@@ -1,0 +1,64 @@
+@model List<IGrouping<string, Compras.com.Models.Produto>>
+
+@{
+    var fornecedores = ViewBag.Fornecedores as List<string>;
+}
+
+<h2>📊 Equalização Profissional</h2>
+
+<form method="get">
+    <input type="text" name="termo" placeholder="Buscar produto" />
+    <button type="submit">Buscar</button>
+</form>
+
+<br />
+
+<table border="1" style="width:100%; text-align:center;">
+    <tr style="background:#ddd;">
+        <th>Produto</th>
+
+        @foreach (var f in fornecedores)
+        {
+            <th>@f</th>
+        }
+
+        <th>Melhor Preço</th>
+    </tr>
+
+    @foreach (var grupo in Model)
+    {
+        var precos = grupo.ToDictionary(p => p.EmailFornecedor, p => p.PrecoUnitario);
+        var menor = grupo.Min(p => p.PrecoUnitario);
+
+        <tr>
+            <td><b>@grupo.Key</b></td>
+
+            @foreach (var f in fornecedores)
+            {
+                if (precos.ContainsKey(f))
+                {
+                    var valor = precos[f];
+
+                    if (valor == menor)
+                    {
+                        <td style="background:lightgreen;">
+                            ⭐ @valor
+                        </td>
+                    }
+                    else
+                    {
+                        <td>@valor</td>
+                    }
+                }
+                else
+                {
+                    <td>-</td>
+                }
+            }
+
+            <td style="background:lightgreen;">
+                <b>@menor</b>
+            </td>
+        </tr>
+    }
+</table>
