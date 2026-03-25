@@ -4,33 +4,23 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. CONFIGURAÇÃO DE SERVIÇOS
+// Configurações Iniciais
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 
-// 2. CONFIGURAÇÃO DO BANCO (SQLite)
+// Configuração do Banco de Dados
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=compras.db"));
 
 var app = builder.Build();
 
-// 3. BLOCO CORINGA: CRIA O BANCO E AS TABELAS AO LIGAR
+// ÚNICA ADIÇÃO NECESSÁRIA: Garante que o banco e as tabelas existam no Render
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
-    try
-    {
-        var context = services.GetRequiredService<AppDbContext>();
-        context.Database.EnsureCreated();
-        Console.WriteLine("Banco de dados e tabelas verificados com sucesso!");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine("Erro ao iniciar banco: " + ex.Message);
-    }
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    context.Database.EnsureCreated();
 }
 
-// 4. CONFIGURAÇÃO DO AMBIENTE
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -43,9 +33,9 @@ app.UseRouting();
 app.UseSession();
 app.UseAuthorization();
 
-// 5. ROTA PRINCIPAL (Ajustada para abrir no Login)
+// ROTA PADRÃO (Voltando para Home/Index que é o padrão do VS)
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Usuarios}/{action=Login}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
