@@ -4,36 +4,33 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// // MVC
+// 1. CONFIGURAÇÃO DE SERVIÇOS
 builder.Services.AddControllersWithViews();
-
-// // SESSION
 builder.Services.AddSession();
 
-// // BANCO (Configurado para rodar no Render e no Local)
+// 2. CONFIGURAÇÃO DO BANCO (SQLite)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=compras.db"));
 
 var app = builder.Build();
 
-// --- BLOCO CORINGA: CRIA AS TABELAS AUTOMATICAMENTE ---
+// 3. BLOCO CORINGA: CRIA O BANCO E AS TABELAS AO LIGAR
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
         var context = services.GetRequiredService<AppDbContext>();
-        // Isso resolve o erro "no such table: Usuarios"
         context.Database.EnsureCreated();
-        Console.WriteLine("Banco de dados e tabelas prontos!");
+        Console.WriteLine("Banco de dados e tabelas verificados com sucesso!");
     }
     catch (Exception ex)
     {
         Console.WriteLine("Erro ao iniciar banco: " + ex.Message);
     }
 }
-// -----------------------------------------------------
 
+// 4. CONFIGURAÇÃO DO AMBIENTE
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -42,16 +39,13 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
-// Habilita a Session que você adicionou no builder
-app.UseSession(); 
-
+app.UseSession();
 app.UseAuthorization();
 
+// 5. ROTA PRINCIPAL (Ajustada para abrir no Login)
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Usuarios}/{action=Login}/{id?}");
 
 app.Run();
