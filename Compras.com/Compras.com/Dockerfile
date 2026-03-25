@@ -1,18 +1,19 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Busca o arquivo de projeto em qualquer subpasta e copia para a pasta atual
-COPY */.csproj ./
-RUN dotnet restore
+# Copia o arquivo usando o caminho exato que vimos no seu GitHub
+COPY ["Compras.com/Compras.com/Compras.com.csproj", "Compras.com/"]
+RUN dotnet restore "Compras.com/Compras.com.csproj"
 
-# Copia todos os arquivos do repositório para o container
+# Copia o restante dos arquivos
 COPY . .
 
-# Encontra a pasta do projeto e compila
-RUN dotnet build -c Release -o /app/build
+# Entra na pasta para compilar
+WORKDIR "/src/Compras.com/Compras.com"
+RUN dotnet build "Compras.com.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Compras.com.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
