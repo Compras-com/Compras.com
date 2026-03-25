@@ -35,15 +35,20 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// COMENTE esta linha abaixo para o Render não se perder no redirecionamento
+// app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
 app.UseAuthorization();
 
-// ROTA DEFINITIVA: Aponta direto para a tela de Login que você já tinha
+// ROTA DEFINITIVA: Aponta para Usuarios/Login
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Usuarios}/{action=Login}/{id?}");
 
-app.Run();
+// AJUSTE DE PORTA: Ele vai usar a 5160 se estiver no Github, 
+// ou a porta que o Render mandar quando estiver online.
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5160";
+app.Run($"http://0.0.0.0:{port}");
