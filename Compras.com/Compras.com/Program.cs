@@ -4,51 +4,53 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuração de Serviços
+// --- CONFIGURAÇÃO DE SERVIÇOS ---
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 
-// Conexão com o Banco de Dados SQLite
+// Configuração do Banco de Dados SQLite (O arquivo compras.db será criado na raiz)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=compras.db"));
 
 var app = builder.Build();
 
-// Bloco que garante a criação das tabelas (visto nos seus logs)
+// --- BLOCO DE CRIAÇÃO DO BANCO (ESSENCIAL PARA O RENDER) ---
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
         var context = services.GetRequiredService<AppDbContext>();
+        // Cria o arquivo compras.db e as tabelas Usuarios, Produtos, etc. automaticamente
         context.Database.EnsureCreated();
     }
     catch (Exception ex)
     {
-        Console.WriteLine("Erro ao criar banco: " + ex.Message);
+        Console.WriteLine("Erro ao inicializar o banco: " + ex.Message);
     }
 }
 
+// --- CONFIGURAÇÃO DO PIPELINE ---
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
-// COMENTE esta linha abaixo para o Render não se perder no redirecionamento
-// app.UseHttpsRedirection();
+// Comentado para evitar conflitos de porta/protocolo no Render
+// app.UseHttpsRedirection(); 
 
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
 app.UseAuthorization();
 
-// ROTA DEFINITIVA: Aponta para Usuarios/Login
+// --- ROTA DE LOGIN (PADRÃO) ---
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Usuarios}/{action=Login}/{id?}");
 
-// AJUSTE DE PORTA: Ele vai usar a 5160 se estiver no Github, 
-// ou a porta que o Render mandar quando estiver online.
+// --- CONTROLE DE PORTA (O SEGREDO DO EQUILÍBRIO) ---
+// Se o Render enviar uma porta, ele usa. Se não, usa a sua 5160 do GitHub.
 var port = Environment.GetEnvironmentVariable("PORT") ?? "5160";
 app.Run($"http://0.0.0.0:{port}");
