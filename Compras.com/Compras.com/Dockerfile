@@ -1,15 +1,16 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Procura o arquivo .csproj em qualquer pasta e traz para a raiz
-COPY ["**/Compras.com.csproj", "./"]
-RUN dotnet restore "Compras.com.csproj"
+# 1. Busca qualquer arquivo .csproj e traz para a pasta atual
+COPY */.csproj ./
+# 2. Restaura o projeto (ele vai usar o arquivo que acabou de copiar)
+RUN dotnet restore
 
-# Copia todo o resto
+# 3. Copia o resto dos arquivos
 COPY . .
 
-# Publica o projeto
-RUN dotnet publish "**/Compras.com.csproj" -c Release -o /app/publish
+# 4. Publica o sistema
+RUN dotnet publish -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
