@@ -14,7 +14,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 var app = builder.Build();
 
-// CRIAÇÃO AUTOMÁTICA DE TABELAS (Resolve o erro 500)
+// Bloco que garante a criação das tabelas (visto nos seus logs)
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -41,10 +41,9 @@ app.UseRouting();
 app.UseSession();
 app.UseAuthorization();
 
-// ROTA PADRÃO: Tenta abrir a Home. Se o seu sistema exigir login, 
-// ele redirecionará automaticamente para a tela de Usuarios/Login.
+// ROTA DEFINITIVA: Aponta direto para a tela de Login que você já tinha
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Usuarios}/{action=Login}/{id?}");
 
 app.Run();
