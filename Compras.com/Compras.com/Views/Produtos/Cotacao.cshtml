@@ -1,0 +1,47 @@
+@model List<Compras.com.Models.Produto>
+
+<h2>Buscar Produtos</h2>
+
+<form asp-controller="Produtos" asp-action="Buscar" method="get">
+    <input type="text" name="termo" placeholder="Produto" />
+    <button type="submit">Buscar</button>
+</form>
+
+<br />
+
+@if (Model != null && Model.Count > 0)
+{
+    <table border="1" width="100%">
+        <tr>
+            <th>Fornecedor</th>
+            <th>Produto</th>
+            <th>Preço</th>
+            <th>Ação</th>
+        </tr>
+
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.EmailFornecedor</td>
+                <td>@p.Nome</td>
+                <td>@p.Preco</td>
+
+                <td>
+                    <a asp-controller="Produtos" asp-action="Adicionar" asp-route-id="@p.Id">
+                        ➕ Adicionar
+                    </a>
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <p>Nenhum produto encontrado.</p>
+}
+
+<br />
+
+<a asp-controller="Home" asp-action="Comprador">
+    ⬅ Voltar
+</a>

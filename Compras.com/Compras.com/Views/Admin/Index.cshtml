@@ -1,0 +1,67 @@
+@model List<Compras.com.Models.Usuario>
+
+<h2>⚙️ Painel do Administrador</h2>
+
+<a asp-controller="Login" asp-action="Logout">Voltar</a> |
+<a asp-controller="Conta" asp-action="AlterarSenha">🔒 Alterar Senha</a>
+<a asp-controller="Login" asp-action="Logout" style="float:right;">❌</a>
+
+<hr />
+
+<h4>🔍 Acessar como:</h4>
+
+<a asp-controller="Admin" asp-action="EntrarComoFornecedor">🏪 Entrar como Fornecedor</a> |
+<a asp-controller="Admin" asp-action="EntrarComoComprador">🛒 Entrar como Comprador</a>
+
+<hr />
+
+<a asp-controller="Admin" asp-action="Criar">➕ Cadastrar Fornecedor / Comprador</a>
+
+<br /><br />
+
+<table class="table table-bordered" style="width:100%;">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Tipo</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+
+    <tbody>
+@if (Model != null && Model.Count > 0)
+{
+    foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Nome</td>
+            <td>@item.Tipo</td>
+            <td>@item.Email</td>
+            <td>
+                @if (item.Ativo)
+                {
+                    <span style="color:green;">Ativo</span>
+                }
+                else
+                {
+                    <span style="color:red;">Bloqueado</span>
+                }
+            </td>
+            <td>
+                <a asp-controller="Admin" asp-action="Detalhes" asp-route-id="@item.Id">👁️ Ver</a> |
+                <a asp-controller="Admin" asp-action="Bloquear" asp-route-id="@item.Id">🔒 Bloquear</a> |
+                <a asp-controller="Admin" asp-action="Excluir" asp-route-id="@item.Id">🗑️ Excluir</a>
+            </td>
+        </tr>
+    }
+}
+else
+{
+    <tr>
+        <td colspan="5">Nenhum usuário cadastrado</td>
+    </tr>
+}
+    </tbody>
+</table>

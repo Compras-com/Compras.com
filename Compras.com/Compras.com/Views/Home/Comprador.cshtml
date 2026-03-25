@@ -1,0 +1,50 @@
+@model List<Compras.com.Models.Produto>
+
+<h2>🛒 Área do Comprador</h2>
+
+<a asp-controller="Login" asp-action="Logout">Voltar</a> |
+<a asp-controller="Conta" asp-action="AlterarSenha">Alterar Senha</a>
+<a asp-controller="Login" asp-action="Logout" style="float:right;">❌</a>
+
+<hr />
+
+<h3>🔍 Buscar Produto</h3>
+
+<form asp-controller="Produtos" asp-action="Buscar" method="get">
+    <input type="text" name="termo" placeholder="Digite o produto" />
+    <button type="submit">Buscar</button>
+</form>
+
+<hr />
+
+<h3>📦 Resultados</h3>
+
+@if (Model != null && Model.Count > 0)
+{
+    <table border="1" width="100%">
+        <tr>
+            <th>Produto</th>
+            <th>Preço</th>
+            <th>Fornecedor</th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Nome</td>
+                <td>@item.Preco</td>
+                <td>@item.EmailFornecedor</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <p>Nenhum produto encontrado.</p>
+}
+
+<br />
+
+<a asp-controller="Produtos" asp-action="MaisBarato">
+    🔽 Ver mais baratos
+</a>

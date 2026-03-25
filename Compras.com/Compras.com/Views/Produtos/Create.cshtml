@@ -1,0 +1,41 @@
+@model Compras.com.Models.Produto
+
+<h2>📦 Cadastrar Produto</h2>
+
+<hr />
+
+<form asp-controller="Produtos" asp-action="Create" method="post">
+
+    @* Mantemos o campo oculto para o modelo não reclamar *@
+    <input type="hidden" asp-for="EmailFornecedor" />
+
+    <div class="form-group mb-3">
+        <label>🏷️ Nome do Produto</label>
+        <input asp-for="Nome" class="form-control" placeholder="Ex: Arroz 5kg" />
+        <span asp-validation-for="Nome" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label>💰 Preço Unitário</label>
+        <input asp-for="Preco" class="form-control" type="number" step="0.01" placeholder="0.00" />
+        <span asp-validation-for="Preco" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label>⚖️ Imposto</label>
+        <select asp-for="ComImposto" class="form-control">
+            <option value="true">Com imposto</option>
+            <option value="false">Sem imposto</option>
+        </select>
+    </div>
+
+    <br />
+
+    <button type="submit" class="btn btn-success">✅ Salvar Produto</button>
+    <a asp-controller="Produtos" asp-action="Index" class="btn btn-secondary">⬅️ Voltar</a>
+
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

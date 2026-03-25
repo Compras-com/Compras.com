@@ -1,0 +1,139 @@
+@model IEnumerable<IGrouping<string, Compras.com.Models.Produto>>
+@using Microsoft.AspNetCore.Http
+
+@{
+    // Lista de fornecedores únicos para o cabeçalho
+    var fornecedores = ViewBag.Fornecedores as List<string> ?? new List<string>();
+}
+
+@* --- CSS Especial para Impressão/PDF --- *@
+<style>
+    @@media print {
+        /* Esconde elementos desnecessários no PDF */
+        .no-print, .btn, form, nav, footer, .btn-group {
+            display: none !important;
+        }
+        
+        .container {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* Melhora o visual da tabela no papel */
+        table {
+            border-collapse: collapse !important;
+            width: 100% !important;
+            font-size: 12pt;
+        }
+
+        th, td {
+            border: 1px solid #000 !important;
+            padding: 8px !important;
+            text-align: center !important;
+        }
+
+        .table-success {
+            background-color: #f2f2f2 !important; /* Cinza leve para o melhor preço no PDF */
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    }
+</style>
+
+<div class="container mt-4">
+    
+    @* --- CABEÇALHO --- *@
+    <div class="d-flex justify-content-between align-items-center no-print">
+        <h2>📊 Equalização de Preços</h2>
+        <div>
+            @* Este botão abre a janela de impressão do Windows/Chrome/Edge *@
+            <button onclick="window.print()" class="btn btn-success shadow-sm">
+                🖨️ Gerar PDF / Imprimir
+            </button>
+            <a asp-action="Index" class="btn btn-secondary shadow-sm">⬅ Voltar</a>
+        </div>
+    </div>
+    
+    <hr class="no-print" />
+
+    @* --- FORMULÁRIO DE FILTRO --- *@
+    <form asp-action="Equalizacao" method="get" class="mb-4 no-print">
+        <div class="input-group">
+            <input type="text" name="termo" class="form-control" placeholder="Buscar produto específico para comparar..." />
+            <button type="submit" class="btn btn-primary">🔍 Comparar</button>
+        </div>
+    </form>
+
+    @* --- TABELA DE COMPARAÇÃO --- *@
+    @if (Model != null && Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered text-center shadow-sm">
+                <thead class="table-dark">
+                    <tr>
+                        <th style="width: 200px;">📦 Produto</th>
+                        @foreach (var f in fornecedores)
+                        {
+                            <th>@f</th>
+                        }
+                        <th class="table-success text-dark">🏆 Melhor Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var grupo in Model)
+                    {
+                        var menorPreco = grupo.Min(p => p.Preco);
+                        
+                        <tr>
+                            <td class="fw-bold bg-light align-middle">@grupo.Key</td>
+                            
+                            @foreach (var f in fornecedores)
+                            {
+                                // Busca o produto deste fornecedor dentro do grupo
+                                var prod = grupo.FirstOrDefault(p => p.EmailFornecedor == f);
+                                
+                                if (prod != null)
+                                {
+                                    <td style="@(prod.Preco == menorPreco ? "background-color: #d4edda;" : "")" class="align-middle">
+                                        <div class="d-grid gap-1">
+                                            <span class="d-block @(prod.Preco == menorPreco ? "fw-bold text-success" : "")">
+                                                @(prod.Preco == menorPreco ? "⭐ " : "") @prod.Preco.ToString("C")
+                                            </span>
+                                            
+                                            @* Botão que só aparece na tela, não no PDF *@
+                                            <a asp-action="SelecionarProduto" asp-route-id="@prod.Id" 
+                                               class="btn btn-sm no-print @(prod.Preco == menorPreco ? "btn-success" : "btn-outline-primary")">
+                                                🛒 Escolher
+                                            </a>
+                                        </div>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td class="text-muted align-middle">-</td>
+                                }
+                            }
+                            
+                            <td class="table-success fw-bold align-middle">
+                                @menorPreco.ToString("C")
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <p class="text-muted mt-2 no-print">* A estrela (⭐) indica o menor preço identificado.</p>
+    }
+    else
+    {
+        <div class="alert alert-info no-print">
+            💡 Digite o nome de um produto acima para gerar a tabela comparativa.
+        </div>
+    }
+
+</div>

@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - Compras.com</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <style>
+        body.dark {
+            background-color: #121212;
+            color: white;
+        }
+
+        body.dark table {
+            color: white;
+        }
+
+        body.dark input,
+        body.dark button {
+            background-color: #333;
+            color: white;
+        }
+        
+        /* Ajuste para a navbar no modo escuro */
+        body.dark .navbar {
+            background-color: #222 !important;
+            border-bottom: 1px solid #444 !important;
+        }
+        body.dark .nav-link, body.dark .navbar-brand {
+            color: #eee !important;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-light bg-light border-bottom mb-3">
+            <div class="container-fluid">
+
+                @* Ajustado para não voltar ao Login ao clicar no nome *@
+                <a class="navbar-brand" href="/Admin/Index">Compras.com</a>
+
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav flex-grow-1">
+
+                        <li class="nav-item">
+                            @* Ajustado: Agora a "Home" leva para o Painel/Admin *@
+                            <a class="nav-link text-dark" href="/Admin/Index">Home</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/Home/Privacy">Privacy</a>
+                        </li>
+                        
+                        @* Opcional: Link para Sair (volta para o login) *@
+                        <li class="nav-item ml-auto">
+                            <a class="nav-link text-danger" href="/Login/Index">Sair</a>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <button onclick="toggleDark()" 
+            style="position:fixed;bottom:15px;right:15px;padding:10px;border-radius:50%; cursor:pointer;">
+        🌙
+    </button>
+
+    <script>
+        function toggleDark() {
+            document.body.classList.toggle("dark");
+        }
+    </script>
+
+    @* Correção do erro de cadastro *@
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+@model List<Compras.com.Models.Produto>
+
+<h2>Produtos Mais Baratos</h2>
+
+@if (Model != null && Model.Count > 0)
+{
+    <table border="1" width="100%">
+        <tr>
+            <th>Nome</th>
+            <th>Preço</th>
+            <th>Imposto</th>
+            <th>Fornecedor</th>
+        </tr>
+
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.Nome</td>
+                <td>@p.Preco</td>
+                <td>@(p.ComImposto ? "Com imposto" : "Sem imposto")</td>
+                <td>@p.EmailFornecedor</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <p>Nenhum produto encontrado.</p>
+}
+
+<br />
+
+<a asp-controller="Home" asp-action="Comprador">
+    ⬅ Voltar
+</a>
