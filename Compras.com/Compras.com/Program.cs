@@ -4,22 +4,35 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configurações do seu projeto original
+// // MVC
 builder.Services.AddControllersWithViews();
+
+// // SESSION
 builder.Services.AddSession();
 
-// Conexão com o Banco
+// // BANCO (Configurado para rodar no Render e no Local)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=compras.db"));
 
 var app = builder.Build();
 
-// ESSA LINHA RESOLVE O ERRO 'NO SUCH TABLE' SEM QUEBRAR O SITE
+// --- BLOCO CORINGA: CRIA AS TABELAS AUTOMATICAMENTE ---
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    context.Database.EnsureCreated();
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDbContext>();
+        // Isso resolve o erro "no such table: Usuarios"
+        context.Database.EnsureCreated();
+        Console.WriteLine("Banco de dados e tabelas prontos!");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("Erro ao iniciar banco: " + ex.Message);
+    }
 }
+// -----------------------------------------------------
 
 if (!app.Environment.IsDevelopment())
 {
@@ -29,11 +42,14 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
-app.UseSession();
+
+// Habilita a Session que você adicionou no builder
+app.UseSession(); 
+
 app.UseAuthorization();
 
-// ROTA PADRÃO (Onde o site começa)
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
