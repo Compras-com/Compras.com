@@ -1,18 +1,17 @@
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0-preview AS build
 WORKDIR /src
 
-# 1. Busca qualquer arquivo .csproj e traz para a pasta atual
-COPY */.csproj ./
-# 2. Restaura o projeto (ele vai usar o arquivo que acabou de copiar)
+# Busca o arquivo .csproj em qualquer pasta e traz para a raiz
+COPY ["*/.csproj", "./"]
 RUN dotnet restore
 
-# 3. Copia o resto dos arquivos
+# Copia todo o resto dos arquivos
 COPY . .
 
-# 4. Publica o sistema
+# Publica o projeto
 RUN dotnet publish -c Release -o /app/publish
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-preview AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "Compras.com.dll"]
