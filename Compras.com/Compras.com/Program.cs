@@ -4,18 +4,17 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Adiciona o suporte ao MVC (que é o que desenha as telas)
+// Configurações do seu projeto original
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 
-// Configura o banco de dados
+// Conexão com o Banco
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=compras.db"));
 
 var app = builder.Build();
 
-// ESSA É A ÚNICA LINHA QUE PRECISAMOS: 
-// Ela apenas cria as tabelas se elas não existirem. Não muda nada nas telas.
+// ESSA LINHA RESOLVE O ERRO 'NO SUCH TABLE' SEM QUEBRAR O SITE
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -34,8 +33,7 @@ app.UseRouting();
 app.UseSession();
 app.UseAuthorization();
 
-// ROTA PADRÃO DO .NET
-// Se o seu site abria no Login antes, ele voltará a abrir agora.
+// ROTA PADRÃO (Onde o site começa)
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
