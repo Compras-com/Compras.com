@@ -21,33 +21,31 @@ namespace Compras.com.Controllers
             return View();
         }
 
+        // ESTA É A PARTE QUE RESOLVE O 405
         [HttpPost]
-        [ValidateAntiForgeryToken] // 🛡️ Segurança extra para formulários
         public IActionResult Entrar(string email, string senha)
         {
-            // 🔐 LOGIN DO ADMIN (ESTÁTICO)
-            if (email == "admin@compras.com" && senha == "admin123") 
+            // Login do Admin
+            if (email == "admin@compras.com" && senha == "admin123")
             {
                 HttpContext.Session.SetString("tipo", "Admin");
                 HttpContext.Session.SetString("email", email);
                 return RedirectToAction("Index", "Admin");
             }
 
-            // 🔽 BUSCA NO BANCO DE DADOS
+            // Login do Fornecedor / Usuário
             var usuario = _context.Usuarios
                 .FirstOrDefault(u => u.Email == email && u.Senha == senha);
 
             if (usuario == null)
             {
-                TempData["Erro"] = "❌ Usuário ou senha inválidos";
-                return RedirectToAction("Index");
+                ViewBag.Erro = "❌ Usuário ou senha inválidos";
+                return View("Index");
             }
 
-            // ✅ GRAVA NA SESSÃO
             HttpContext.Session.SetString("tipo", usuario.Tipo);
             HttpContext.Session.SetString("email", usuario.Email);
 
-            // 🚀 REDIRECIONAMENTO
             return RedirectToAction("Index", "Produtos");
         }
 
