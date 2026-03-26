@@ -2,25 +2,30 @@
     ViewData["Title"] = "Login";
 }
 
-<div style="width:300px;margin:100px auto;text-align:center;border:1px solid #ccc;padding:20px;">
+<div style="width:300px;margin:100px auto;text-align:center;border:1px solid #ccc;padding:20px;border-radius:8px;background-color:#f9f9f9;">
 
     <h2>Compras.com</h2>
 
-    <form asp-controller="Login" asp-action="Entrar" method="post">
+    <form action="/Login/Entrar" method="post">
 
-        <input type="text" name="email" placeholder="Usuário" required />
+        <input type="text" name="email" placeholder="E-mail" required style="width:90%; padding:8px;" />
         <br /><br />
 
-        <input type="password" name="senha" placeholder="Senha" required />
+        <input type="password" name="senha" placeholder="Senha" required style="width:90%; padding:8px;" />
         <br /><br />
 
-        <button type="submit">Entrar</button>
+        <button type="submit" style="width:95%; padding:10px; cursor:pointer; background-color:#007bff; color:white; border:none; border-radius:4px;">Entrar</button>
 
     </form>
 
     @if (ViewBag.Erro != null)
     {
-        <p style="color:red">@ViewBag.Erro</p>
+        <p style="color:red; margin-top:15px;">@ViewBag.Erro</p>
+    }
+    
+    @if (TempData["Erro"] != null)
+    {
+        <p style="color:red; margin-top:15px;">@TempData["Erro"]</p>
     }
 
 </div>
