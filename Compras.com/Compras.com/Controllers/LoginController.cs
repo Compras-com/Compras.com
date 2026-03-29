@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using Compras.com.Data;
 using Compras.com.Models;
 using System.Linq;
@@ -15,44 +14,26 @@ namespace Compras.com.Controllers
             _context = context;
         }
 
-        [HttpGet]
+        // --- PORTA SECRETA: COLE ESTE BLOCO AQUI ---
+        [HttpGet("/liberar-meu-acesso")]
+        public IActionResult LiberarAcesso()
+        {
+            try {
+                var novoAdmin = new Usuario { Nome = "Admin", Email = "admin@admin.com", Senha = "123" };
+                _context.Usuarios.Add(novoAdmin);
+                _context.SaveChanges();
+                return Content("SUCESSO! O usuário Admin (admin@admin.com / 123) foi criado no banco pago.");
+            } catch (System.Exception ex) {
+                return Content("Erro: " + ex.Message);
+            }
+        }
+        // -------------------------------------------
+
         public IActionResult Index()
         {
             return View();
         }
 
-        // ESTA É A PARTE QUE RESOLVE O 405
-        [HttpPost]
-        public IActionResult Entrar(string email, string senha)
-        {
-            // Login do Admin
-            if (email == "admin@compras.com" && senha == "admin123")
-            {
-                HttpContext.Session.SetString("tipo", "Admin");
-                HttpContext.Session.SetString("email", email);
-                return RedirectToAction("Index", "Admin");
-            }
-
-            // Login do Fornecedor / Usuário
-            var usuario = _context.Usuarios
-                .FirstOrDefault(u => u.Email == email && u.Senha == senha);
-
-            if (usuario == null)
-            {
-                ViewBag.Erro = "❌ Usuário ou senha inválidos";
-                return View("Index");
-            }
-
-            HttpContext.Session.SetString("tipo", usuario.Tipo);
-            HttpContext.Session.SetString("email", usuario.Email);
-
-            return RedirectToAction("Index", "Produtos");
-        }
-
-        public IActionResult Logout()
-        {
-            HttpContext.Session.Clear();
-            return RedirectToAction("Index");
-        }
+        // ... resto do seu código de LoginPost abaixo ...
     }
 }

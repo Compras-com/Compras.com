@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// CONFIGURAÇÃO DO BANCO PAGO
+// CONEXÃO COM O BANCO PAGO
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString)); 
@@ -16,26 +16,13 @@ builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
 var app = builder.Build();
 
-// CRIA AS TABELAS NO BANCO PAGO
+// GARANTE QUE AS TABELAS SEJAM CRIADAS
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
-    try
-    {
-        var context = services.GetRequiredService<AppDbContext>();
+    try {
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         context.Database.EnsureCreated(); 
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Erro ao conectar no banco de dados.");
-    }
-}
-
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
+    } catch { }
 }
 
 app.UseStaticFiles();
