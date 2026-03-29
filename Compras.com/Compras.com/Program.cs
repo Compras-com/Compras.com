@@ -1,10 +1,9 @@
 using Compras.com.Data;
-using Compras.com.Models; // Certifique-se que o namespace do seu modelo de Usuário está certo
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- CONFIGURAÇÃO DO BANCO PAGO ---
+// CONFIGURAÇÃO DO BANCO PAGO
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString)); 
@@ -17,7 +16,7 @@ builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
 var app = builder.Build();
 
-// --- ESTE BLOCO CRIA O BANCO E O USUÁRIO ADMIN AUTOMATICAMENTE ---
+// CRIA AS TABELAS NO BANCO PAGO
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -25,23 +24,11 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<AppDbContext>();
         context.Database.EnsureCreated(); 
-
-        // Verifica se já existe algum usuário. Se não existir, ele cria o seu.
-        if (!context.Usuarios.Any()) 
-        {
-            context.Usuarios.Add(new Usuario 
-            { 
-                Nome = "Admin", 
-                Email = "admin@admin.com", // Coloque o email que você usa
-                Senha = "123" // Coloque a senha que você quer usar
-            });
-            context.SaveChanges();
-        }
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Erro ao configurar banco ou criar admin.");
+        logger.LogError(ex, "Erro ao conectar no banco de dados.");
     }
 }
 
