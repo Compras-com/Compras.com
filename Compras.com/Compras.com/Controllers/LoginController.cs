@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using Compras.com.Data;
 using Compras.com.Models;
 using System.Linq;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Compras.com.Controllers
 {
@@ -21,37 +23,52 @@ namespace Compras.com.Controllers
             return View();
         }
 
-        // ESTA É A PARTE QUE RESOLVE O 405
         [HttpPost]
-        public IActionResult Entrar(string email, string senha)
+        public async Task<IActionResult> Entrar(string email, string senha)
         {
-            // Login do Admin
+            // Admin fixo
             if (email == "admin@compras.com" && senha == "admin123")
             {
-                HttpContext.Session.SetString("tipo", "Admin");
-                HttpContext.Session.SetString("email", email);
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, email),
+                    new Claim("Tipo", "Admin")
+                };
+
+                var identity = new ClaimsIdentity(claims, "Cookies");
+                var principal = new ClaimsPrincipal(identity);
+
+                await HttpContext.SignInAsync("Cookies", principal);
+
                 return RedirectToAction("Index", "Admin");
             }
 
-            // Login do Fornecedor / Usuário
             var usuario = _context.Usuarios
                 .FirstOrDefault(u => u.Email == email && u.Senha == senha);
 
             if (usuario == null)
             {
-                ViewBag.Erro = "❌ Usuário ou senha inválidos";
+                ViewBag.Erro = "Usuário ou senha inválidos";
                 return View("Index");
             }
 
-            HttpContext.Session.SetString("tipo", usuario.Tipo);
-            HttpContext.Session.SetString("email", usuario.Email);
+            var claimsUser = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, usuario.Email),
+                new Claim("Tipo", usuario.Tipo)
+            };
+
+            var identityUser = new ClaimsIdentity(claimsUser, "Cookies");
+            var principalUser = new ClaimsPrincipal(identityUser);
+
+            await HttpContext.SignInAsync("Cookies", principalUser);
 
             return RedirectToAction("Index", "Produtos");
         }
 
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            HttpContext.Session.Clear();
+            await HttpContext.SignOutAsync("Cookies");
             return RedirectToAction("Index");
         }
     }

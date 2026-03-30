@@ -14,28 +14,23 @@ namespace Compras.com.Data
         public DbSet<Produto> Produtos { get; set; }
         public DbSet<Cotacao> Cotacoes { get; set; }
 
-        // 🔥 CONFIGURAÇÕES EXTRA (EVITA ERROS)
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // 🔹 Usuario
             modelBuilder.Entity<Usuario>()
-                .Property(u => u.Nome)
-                .IsRequired();
+                .Property(u => u.Nome).IsRequired();
 
             modelBuilder.Entity<Usuario>()
-                .Property(u => u.Email)
-                .IsRequired();
+                .Property(u => u.Email).IsRequired();
 
-            // 🔹 Produto
             modelBuilder.Entity<Produto>()
-                .Property(p => p.Nome)
-                .IsRequired();
+                .Property(p => p.Nome).IsRequired();
 
+            // 🔴 PostgreSQL correto
             modelBuilder.Entity<Produto>()
                 .Property(p => p.Preco)
-                .HasColumnType("decimal(18,2)");
+                .HasColumnType("numeric(18,2)");
         }
     }
 }
