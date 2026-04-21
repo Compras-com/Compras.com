@@ -1,36 +1,25 @@
 using Microsoft.AspNetCore.Mvc;
-using Compras.com.Data;
 using Compras.com.Models;
-using System.Globalization;
+using Compras.com.Data;
+using System.Linq;
 
 namespace Compras.com.Controllers
 {
     public class FornecedorController : Controller
     {
-        private readonly AppDbContext _context; // 🔥 INJEÇÃO
+        private readonly BancoContext _context;
+        public FornecedorController(BancoContext context) => _context = context;
 
-        public FornecedorController(AppDbContext context)
-        {
-            _context = context;
+        public IActionResult Index() {
+            // No futuro, pegar o ID do fornecedor logado
+            return View(_context.Produtos.ToList()); 
         }
 
         [HttpPost]
-        public IActionResult Salvar(string Nome, string Preco, string Imposto, string Desconto)
-        {
-            var produto = new Produto
-            {
-                Nome = Nome,
-
-                // 🔥 CONVERSÃO SEGURA
-                Preco = decimal.Parse(Preco.Replace(",", "."), CultureInfo.InvariantCulture),
-                Imposto = decimal.Parse(Imposto.Replace(",", "."), CultureInfo.InvariantCulture),
-                Desconto = decimal.Parse(Desconto.Replace(",", "."), CultureInfo.InvariantCulture)
-            };
-
-            _context.Produtos.Add(produto);
-            _context.SaveChanges(); // 🔥 SALVA NO BANCO
-
-            return RedirectToAction("Fornecedor", "Home");
+        public IActionResult CadastrarProduto(Produto p) {
+            _context.Produtos.Add(p);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
         }
     }
 }

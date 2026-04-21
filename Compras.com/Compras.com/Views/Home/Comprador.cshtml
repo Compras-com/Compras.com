@@ -1,50 +1,41 @@
-@model List<Compras.com.Models.Produto>
+@model IEnumerable<Compras.com.Models.Produto>
+@{ Layout = "_Layout"; }
 
-<h2>🛒 Área do Comprador</h2>
+<div class="container mt-4 text-white">
+    <div class="d-flex justify-content-between align-items-center">
+        <h2>Planilha de Equalização</h2>
+        <span class="badge bg-info">Perfil: Comprador</span>
+    </div>
+    <hr />
 
-<a asp-controller="Login" asp-action="Logout">Voltar</a> |
-<a asp-controller="Conta" asp-action="AlterarSenha">Alterar Senha</a>
-<a asp-controller="Login" asp-action="Logout" style="float:right;">❌</a>
-
-<hr />
-
-<h3>🔍 Buscar Produto</h3>
-
-<form asp-controller="Produtos" asp-action="Buscar" method="get">
-    <input type="text" name="termo" placeholder="Digite o produto" />
-    <button type="submit">Buscar</button>
-</form>
-
-<hr />
-
-<h3>📦 Resultados</h3>
-
-@if (Model != null && Model.Count > 0)
-{
-    <table border="1" width="100%">
-        <tr>
-            <th>Produto</th>
-            <th>Preço</th>
-            <th>Fornecedor</th>
-        </tr>
-
-        @foreach (var item in Model)
-        {
+    <table class="table table-dark table-striped table-hover mt-3">
+        <thead>
             <tr>
-                <td>@item.Nome</td>
-                <td>@item.Preco</td>
-                <td>@item.EmailFornecedor</td>
+                <th>Fornecedor</th>
+                <th>Produto</th>
+                <th>Preço Base</th>
+                <th>IPI (%)</th>
+                <th>Frete</th>
+                <th>Total Final</th>
+                <th>Ação</th>
             </tr>
-        }
+        </thead>
+        <tbody>
+            @foreach(var p in Model) {
+                // Cálculo da equalização: Preço + IPI + Frete - Desconto
+                var total = p.Preco + (p.Preco * (p.Ipi / 100)) + p.Frete - p.Desconto;
+                <tr>
+                    <td>@p.Fornecedor?.Nome</td>
+                    <td>@p.Nome</td>
+                    <td>@p.Preco.ToString("C")</td>
+                    <td>@p.Ipi%</td>
+                    <td>@p.Frete.ToString("C")</td>
+                    <td class="text-warning fw-bold">@total.ToString("C")</td>
+                    <td>
+                        <button class="btn btn-sm btn-success">Comprar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
     </table>
-}
-else
-{
-    <p>Nenhum produto encontrado.</p>
-}
-
-<br />
-
-<a asp-controller="Produtos" asp-action="MaisBarato">
-    🔽 Ver mais baratos
-</a>
+</div>

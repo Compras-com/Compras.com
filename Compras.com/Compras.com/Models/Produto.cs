@@ -1,29 +1,18 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Compras.com.Models
 {
     public class Produto
     {
+        [Key]
         public int Id { get; set; }
-
-        [Required(ErrorMessage = "O nome do produto é obrigatório")]
-        public string Nome { get; set; } = string.Empty;
-
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal Preco { get; set; }
-
-        // ✅ Adicionando os campos que o compilador está cobrando:
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal Imposto { get; set; }
-
-        [Column(TypeName = "decimal(18,2)")]
+        [Required] public string Nome { get; set; }
+        [Required] public decimal Preco { get; set; }
+        public decimal Ipi { get; set; }
         public decimal Desconto { get; set; }
-
-        public bool ComImposto { get; set; }
-
-        public string? EmailFornecedor { get; set; } 
+        public decimal Frete { get; set; }
         
-        public int? UsuarioId { get; set; } 
+        public int FornecedorId { get; set; }
+        public Usuario? Fornecedor { get; set; }
     }
 }

@@ -4,27 +4,14 @@ namespace Compras.com.Models
 {
     public class Usuario
     {
+        [Key]
         public int Id { get; set; }
-
-        [Required]
-        public string Nome { get; set; } = string.Empty;
-
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; } = string.Empty;
-
-        [Required]
-        public string Senha { get; set; } = string.Empty;
-
-        [Required]
-        public string Tipo { get; set; } = string.Empty; // Admin / Fornecedor / Comprador
-
+        [Required] public string Nome { get; set; }
+        [Required] public string Login { get; set; }
+        [Required] public string Senha { get; set; }
+        public string? Email { get; set; }
+        public string Tipo { get; set; } // Admin, Fornecedor, Comprador
         public bool Ativo { get; set; } = true;
-
-        // 🔥 CAMPOS USADOS NAS VIEWS
-        public string Documento { get; set; } = string.Empty;
-        public string Endereco { get; set; } = string.Empty;
-        public string Telefone { get; set; } = string.Empty;
-        public string Contato { get; set; } = string.Empty;
+        public string? CpfCnpj { get; set; }
     }
 }
