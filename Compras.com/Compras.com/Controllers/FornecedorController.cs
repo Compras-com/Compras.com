@@ -7,8 +7,8 @@ namespace Compras.com.Controllers
 {
     public class FornecedorController : Controller
     {
-        private readonly BancoContext _context;
-        public FornecedorController(BancoContext context) => _context = context;
+        private readonly AppDbContext _context;
+        public FornecedorController(AppDbContext context) => _context = context;
 
         public IActionResult Index() {
             // No futuro, pegar o ID do fornecedor logado

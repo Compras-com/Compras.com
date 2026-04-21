@@ -7,8 +7,8 @@ namespace Compras.com.Controllers
 {
     public class CompradorController : Controller
     {
-        private readonly BancoContext _context;
-        public CompradorController(BancoContext context) => _context = context;
+        private readonly AppDbContext _context;
+        public CompradorController(AppDbContext context) => _context = context;
 
         public IActionResult Index() 
         {

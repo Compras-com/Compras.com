@@ -7,8 +7,8 @@ namespace Compras.com.Controllers
 {
     public class AdminController : Controller
     {
-        private readonly BancoContext _context;
-        public AdminController(BancoContext context) => _context = context;
+        private readonly AppDbContext _context;
+        public AdminController(AppDbContext context) => _context = context;
 
         // Esta é a sua tela de listagem (onde você bloqueia/exclui)
         public IActionResult Index() => View(_context.Usuarios.ToList());

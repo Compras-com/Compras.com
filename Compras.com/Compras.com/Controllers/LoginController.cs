@@ -7,9 +7,9 @@ namespace Compras.com.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly BancoContext _context;
+        private readonly AppDbContext _context;
 
-        public LoginController(BancoContext context)
+        public LoginController(AppDbContext context)
         {
             _context = context;
         }
